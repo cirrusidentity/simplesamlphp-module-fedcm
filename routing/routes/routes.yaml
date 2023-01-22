@@ -1,0 +1,3 @@
+fedcm-accountslist:
+    path:       /accounts_list
+    defaults:   { _controller: 'SimpleSAML\Module\fedcm\Controller\AccountsList::main' }

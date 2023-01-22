@@ -1,0 +1,57 @@
+{
+    "name": "cirrusidentity/simplesamlphp-module-fedcm",
+    "description": "This module provides support for the FedCM IdP API",
+    "type": "simplesamlphp-module",
+    "keywords": [
+        "simplesamlphp",
+        "fedcm"
+    ],
+    "license": "LGPL-2.1-only",
+    "authors": [
+        {
+            "name": "Gary Windham",
+            "email": "gary@cirrusidentity.com"
+        }
+    ],
+    "config": {
+        "preferred-install": {
+            "simplesamlphp/simplesamlphp": "source",
+            "*": "dist"
+        },
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "simplesamlphp/composer-module-installer": true
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "SimpleSAML\\Module\\fedcm\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.4 || ^8.0",
+        "simplesamlphp/assert": "~0.8.0",
+        "simplesamlphp/simplesamlphp": "^2.0.0-rc2",
+        "simplesamlphp/composer-module-installer": "^1.2.0",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "cirrusidentity/simplesamlphp-test-utils": "v2.x-dev",
+        "simplesamlphp/simplesamlphp-test-framework": "~1.2.1"
+    },
+    "support": {
+        "issues": "https://github.com/cirrusidentity/simplesamlphp-module-fedcm/issues",
+        "source": "https://github.com/cirrusidentity/simplesamlphp-module-fedcm"
+    },
+    "scripts": {
+        "validate": [
+            "vendor/bin/phpunit --no-coverage",
+            "vendor/bin/phpcs -p",
+            "vendor/bin/psalm"
+        ],
+        "tests": [
+            "vendor/bin/phpunit --no-coverage"
+        ]
+    }
+}
