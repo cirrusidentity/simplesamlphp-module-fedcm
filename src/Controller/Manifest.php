@@ -2,9 +2,9 @@
 
 namespace SimpleSAML\Module\fedcm\Controller;
 
-use SimpleSAML\Auth;
 use SimpleSAML\Configuration;
 use SimpleSAML\Logger;
+use SimpleSAML\Module;
 use SimpleSAML\Session;
 use SimpleSAML\Module\fedcm\FedCM\SecUtils;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,15 +12,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 
 /**
- * Controller class for accounts list functionality for the
- * fedcm module.
- *
- * This class serves the list of signed-in accounts on the IdP
- * for the user.
+ * Controller class for manifest endpoint functionality
+ * for the fedcm module.
  *
  * @package SimpleSAML\Module\fedcm
  */
-class AccountsList
+class Manifest
 {
     /** @var \SimpleSAML\Configuration */
     protected Configuration $config;
@@ -52,44 +49,33 @@ class AccountsList
      */
     public function main(Request $request): Response
     {
-        Logger::debug('*** Accessing accounts list endpoint');
+        Logger::debug('*** Accessing manifest endpoint');
 
-        $accts = [];
+        $output = [];
         $httpResponseCode = 403;
 
         if (SecUtils::isFedCmRequest($request)) {
             $moduleConfig = Configuration::getConfig('module_fedcm.php');
-            $attrMap = $moduleConfig->getArray('fedcmAttributeMapping');
 
-            $metadata = \SimpleSAML\Metadata\MetaDataStorageHandler::getMetadataHandler();
-            $idpEntityId = $metadata->getMetaDataCurrentEntityID('saml20-idp-hosted');
-            $idp = \SimpleSAML\IdP::getById('saml2:' . $idpEntityId);
-            $auth = $idp->getConfig()->getString('auth');
-            if (Auth\Source::getById($auth) !== null) {
-                $authSource = new Auth\Simple($auth);
-                if ($authSource->isAuthenticated()) {
-                    $authSourceAttrs = $authSource->getAttributes();
-                    Logger::debug('*** attrs = ' . print_r($authSourceAttrs, true));
-                    $acctAttrs = [];
-                    foreach ($attrMap as $key => $val) {
-                        if (array_key_exists($val, $authSourceAttrs)) {
-                            $acctAttrs[$key] = $authSourceAttrs[$val][0];
-                        }
-                    }
-                    if ($acctAttrs) {
-                        $accts[] = $acctAttrs;
-                    }
-                }
+            $branding = $moduleConfig->getOptionalArray('branding', []);
+            $output = [
+                'accounts_endpoint' => Module::getModuleURL('fedcm/accounts-list'),
+                'client_metadata_endpoint' => Module::getModuleURL('fedcm/client-metadata'),
+                'id_assertion_endpoint' => Module::getModuleURL('fedcm/identity-assertion')
+            ];
+            if ($branding) {
+                $output['branding'] = $branding;
             }
             $httpResponseCode = 200;
         }
+
         $response = new Response(
-            json_encode(['accounts' => $accts], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
+            json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
             $httpResponseCode,
             ['Content-Type' => 'application/json;charset=utf-8']
         );
 
-        Logger::debug('*** returning response = ' . $response->getContent());
+        Logger::debug('*** returning manifest response = ' . $response->getContent());
  
         return $response;
     }

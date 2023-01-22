@@ -1,3 +1,9 @@
+fedcm-webidentity:
+    path:       /web-identity
+    defaults:   { _controller: 'SimpleSAML\Module\fedcm\Controller\WebIdentity::main' }
+fedcm-manifest:
+    path:       /manifest
+    defaults:   { _controller: 'SimpleSAML\Module\fedcm\Controller\Manifest::main' }
 fedcm-accountslist:
-    path:       /accounts_list
+    path:       /accounts-list
     defaults:   { _controller: 'SimpleSAML\Module\fedcm\Controller\AccountsList::main' }
