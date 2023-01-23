@@ -17,4 +17,10 @@ $config = [
         'email' => 'mail',
         'given_name' => 'givenName'
     ],
+    'clientMetadataMapping' => [
+        'https://sp.college.edu/sp' => [
+            'privacyUrl' => 'https://www.cirrusidentity.com/privacy-policy',
+            'termsOfServiceUrl' => 'https://www.cirrusidentity.com/terms-of-service'
+        ]
+    ]
 ];
