@@ -2,9 +2,9 @@
 
 namespace SimpleSAML\Module\fedcm\Controller;
 
+use SimpleSAML\Auth;
 use SimpleSAML\Configuration;
 use SimpleSAML\Logger;
-use SimpleSAML\Module;
 use SimpleSAML\Session;
 use SimpleSAML\Module\fedcm\FedCM\SecUtils;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,12 +12,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 
 /**
- * Controller class for manifest endpoint functionality
- * for the fedcm module.
+ * Controller class for "signin_url" functionality for the
+ * fedcm module.
+ *
+ * This class forces sign-in if there is no authenticated session
+ * for the request.
  *
  * @package SimpleSAML\Module\fedcm
  */
-class Manifest
+class SignIn
 {
     /** @var \SimpleSAML\Configuration */
     protected Configuration $config;
@@ -49,34 +52,32 @@ class Manifest
      */
     public function main(Request $request): Response
     {
-        Logger::debug('*** Accessing manifest endpoint');
+        Logger::debug('*** Accessing signin_url endpoint');
 
-        $output = [];
         $httpResponseCode = 403;
+        $headers = [];
 
         if (SecUtils::isFedCmRequest($request)) {
-            $moduleConfig = Configuration::getConfig('module_fedcm.php');
-
-            $branding = $moduleConfig->getOptionalArray('branding', []);
-            $output = [
-                'accounts_endpoint' => Module::getModuleURL('fedcm/accounts-list'),
-                'client_metadata_endpoint' => Module::getModuleURL('fedcm/client-metadata'),
-                'id_assertion_endpoint' => Module::getModuleURL('fedcm/identity-assertion'),
-                'signin_url' => Module::getModuleURL('fedcm/signin')
-            ];
-            if ($branding) {
-                $output['branding'] = $branding;
+            $metadata = \SimpleSAML\Metadata\MetaDataStorageHandler::getMetadataHandler();
+            $idpEntityId = $metadata->getMetaDataCurrentEntityID('saml20-idp-hosted');
+            $idp = \SimpleSAML\IdP::getById('saml2:' . $idpEntityId);
+            $auth = $idp->getConfig()->getString('auth');
+            if (Auth\Source::getById($auth) !== null) {
+                $authSource = new Auth\Simple($auth);
+                // force authentication if not authenticated, else return immediately
+                Logger::debug('*** Requiring auth...');
+                $authSource->requireAuth();
+                Logger::debug('*** requireAuth() returned');
+                // tell FedCM API user is signed-in
+                $headers['IdP-Sign-in-Status'] = 'action=login';
+                $httpResponseCode = 200;
             }
-            $httpResponseCode = 200;
         }
-
         $response = new Response(
-            json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
+            null,
             $httpResponseCode,
-            ['Content-Type' => 'application/json;charset=utf-8']
+            $headers
         );
-
-        Logger::debug('*** returning manifest response = ' . $response->getContent());
  
         return $response;
     }

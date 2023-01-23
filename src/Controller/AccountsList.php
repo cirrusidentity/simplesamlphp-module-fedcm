@@ -80,8 +80,8 @@ class AccountsList
                         $accts[] = $acctAttrs;
                     }
                 }
+                $httpResponseCode = 200;
             }
-            $httpResponseCode = 200;
         }
         $response = new Response(
             json_encode(['accounts' => $accts], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
