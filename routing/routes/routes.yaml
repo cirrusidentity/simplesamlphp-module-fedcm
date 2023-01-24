@@ -10,6 +10,9 @@ fedcm-accounts-list:
 fedcm-client-metadata:
     path:       /client-metadata
     defaults:   { _controller: 'SimpleSAML\Module\fedcm\Controller\ClientMetadata::main' }
+fedcm-identity-assertion:
+    path:       /identity-assertion
+    defaults:   { _controller: 'SimpleSAML\Module\fedcm\Controller\IdentityAssertion::main' }
 fedcm-signin:
     path:       /signin
     defaults:   { _controller: 'SimpleSAML\Module\fedcm\Controller\SignIn::main' }
