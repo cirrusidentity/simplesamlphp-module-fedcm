@@ -54,7 +54,7 @@ If you are testing locally, so you can ignore the [Install](#install) and [Confi
   5. `cd` back into this project directory.
   6. Run the following command in a shell in the top-level of this project directory. Replace `https://2c1c-69-137-176-246.ngrok.io` with whatever ngrok returned for your forwarding URL in step 4, above. If your ngrok forwarding URL changes in the future, you can re-run this command to update it (just use the previous ngrok URL value instead of `https://your-forwarding-url.ngrok.io`).
      ```bash
-     scripts/set-ngrok-url.sh https://your-forwarding-url.ngrok.io https://2c1c-69-137-176-246.ngrok.io/fedcmtest.php
+     scripts/set-ngrok-url.sh https://your-forwarding-url.ngrok.io https://2c1c-69-137-176-246.ngrok.io
      ```
   7. Run the following to launch the `docker-simplesamlphp` container, using the local `simplesamlphp-module-fedcm` module and configuration files from the `samples` directory:
      ```bash
