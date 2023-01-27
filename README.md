@@ -58,7 +58,7 @@ If you are testing locally, so you can ignore the [Install](#install) and [Confi
      ```
   7. Run the following to launch the `docker-simplesamlphp` container, using the local `simplesamlphp-module-fedcm` module and configuration files from the `samples` directory:
      ```bash
-     docker run --name ssp-idp \    
+     docker run --name ssp-idp \
      --mount type=bind,source="$(pwd)/samples/cert",target=/var/simplesamlphp/cert,readonly \
      --mount type=bind,source="$(pwd)/samples/idp/authsources.php",target=/var/simplesamlphp/config/authsources.php,readonly \
      --mount type=bind,source="$(pwd)/samples/idp/config-override.php",target=/var/simplesamlphp/config/config-override.php,readonly \
