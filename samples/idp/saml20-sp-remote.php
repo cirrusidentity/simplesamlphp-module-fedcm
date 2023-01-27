@@ -12,7 +12,7 @@ $metadata['https://sp.college.edu/sp'] = [
             'index' => 1,
             'isDefault' => true,
             'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
-            'Location' => 'https://sp.college.edu/idp/module.php/saml/sp/saml2-acs.php/sp.college.edu'
+            'Location' => 'https://your-forwarding-url.ngrok.io/sample-idp/module.php/saml/sp/saml2-acs.php/default-sp'
         ]
     ]
 ];
